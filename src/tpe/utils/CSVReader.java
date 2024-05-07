@@ -13,16 +13,20 @@ import java.util.ArrayList;
 
 public class CSVReader {
 
+	private ArrayList<Tarea> tareas;
+	private ArrayList<Procesador> procesadores;
+
 	public CSVReader() {
+		this.tareas = new ArrayList<>();
+		this.procesadores = new ArrayList<>();
 	}
 	
-	public ArrayList<Tarea> readTasks(String taskPath) {
+	public void readTasks(String taskPath) {
 		
 		// Obtengo una lista con las lineas del archivo
 		// lines.get(0) tiene la primer linea del archivo
 		// lines.get(1) tiene la segunda linea del archivo... y así
 		ArrayList<String[]> lines = this.readContent(taskPath); //O(N) n = elementos archivo
-		ArrayList<Tarea> tareas = new ArrayList<>();
 		for (String[] line: lines) { //O(N) n = elementos archivo
 			// Cada linea es un arreglo de Strings, donde cada posicion guarda un elemento
 			String id = line[0].trim();
@@ -32,18 +36,16 @@ public class CSVReader {
 			Integer prioridad = Integer.parseInt(line[4].trim());
 			// Aca instanciar lo que necesiten en base a los datos leidos
 			Tarea tarea = new Tarea(id, nombre, tiempo, critica, prioridad);
-			tareas.add(tarea);
+			this.tareas.add(tarea);
 		}
-		return tareas;
 	}
 	
-public ArrayList<Procesador> readProcessors(String processorPath) {
+	public void readProcessors(String processorPath) {
 		
 		// Obtengo una lista con las lineas del archivo
 		// lines.get(0) tiene la primer linea del archivo
 		// lines.get(1) tiene la segunda linea del archivo... y así
 		ArrayList<String[]> lines = this.readContent(processorPath);
-		ArrayList<Procesador> procesadores = new ArrayList<>();
 		for (String[] line: lines) {
 			// Cada linea es un arreglo de Strings, donde cada posicion guarda un elemento
 			String id = line[0].trim();
@@ -52,10 +54,8 @@ public ArrayList<Procesador> readProcessors(String processorPath) {
 			Integer anio = Integer.parseInt(line[3].trim());
 			// Aca instanciar lo que necesiten en base a los datos leidos
 			Procesador proc = new Procesador(id, codigo, refrigerado, anio);
-			procesadores.add(proc);
+			this.procesadores.add(proc);
 		}
-
-		return procesadores;
 	}
 
 	private ArrayList<String[]> readContent(String path) {
@@ -84,5 +84,11 @@ public ArrayList<Procesador> readProcessors(String processorPath) {
 		
 		return lines;
 	}
-	
+
+	public ArrayList<Tarea> getTareas(){
+		return new ArrayList<Tarea>(this.tareas);
+	}
+	public ArrayList<Procesador> getProcesadores(){
+		return new ArrayList<Procesador>(this.procesadores);
+	}
 }

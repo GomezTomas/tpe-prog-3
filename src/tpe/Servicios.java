@@ -27,8 +27,10 @@ public class Servicios {
 	public Servicios(String pathProcesadores, String pathTareas)
 	{
 		CSVReader reader = new CSVReader(); //O(1)
-		this.procesadores = reader.readProcessors(pathProcesadores); //O(N) n = cantProcesadores
-		this.tareas = reader.readTasks(pathTareas); //O(M) m = cantTareas
+		reader.readProcessors(pathProcesadores); //O(N) n = cantProcesadores
+		reader.readTasks(pathTareas); //O(M) m = cantTareas
+		this.tareas = reader.getTareas();
+		this.procesadores = reader.getProcesadores();
 //		System.out.println(this.tareas);
 //		System.out.println(this.procesadores);
 	}
