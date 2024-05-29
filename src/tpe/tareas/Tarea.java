@@ -1,6 +1,6 @@
-package tpe;
+package tpe.tareas;
 
-public class Tarea {
+public class Tarea implements Comparable<Tarea>{
     private String id;
     private String nombre;
     private Integer tiempo;
@@ -17,6 +17,8 @@ public class Tarea {
 
     @Override
     public String toString() {
+//        return prioridad.toString();
+//        return String.format("id: %s, pr: %s", id, prioridad);
         return String.format("[id: %s, nombre: %s, tiempo: %s, critica: %s, prioridad: %s] \n", this.id, this.nombre, this.tiempo, this.critica, this.prioridad);
     }
 
@@ -28,6 +30,11 @@ public class Tarea {
     }
     public Integer getPrioridad() {
         return this.prioridad;
+    }
+
+    @Override
+    public int compareTo(Tarea o) {
+        return this.getPrioridad().compareTo(o.getPrioridad());
     }
 }
 

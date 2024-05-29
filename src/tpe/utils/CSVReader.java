@@ -2,7 +2,9 @@ package tpe.utils;
 
 
 import tpe.Procesador;
-import tpe.Tarea;
+import tpe.tareas.Tarea;
+import tpe.tareas.TareaCritica;
+import tpe.Tree;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,11 +15,13 @@ import java.util.ArrayList;
 
 public class CSVReader {
 
-	private ArrayList<Tarea> tareas;
+	private Tree tareas;
+	private Tree tareasCriticas;
 	private ArrayList<Procesador> procesadores;
 
 	public CSVReader() {
-		this.tareas = new ArrayList<>();
+		this.tareas = new Tree();
+		this.tareasCriticas = new Tree();
 		this.procesadores = new ArrayList<>();
 	}
 	
@@ -36,7 +40,9 @@ public class CSVReader {
 			Integer prioridad = Integer.parseInt(line[4].trim());
 			// Aca instanciar lo que necesiten en base a los datos leidos
 			Tarea tarea = new Tarea(id, nombre, tiempo, critica, prioridad);
+			TareaCritica tareaCritica = new TareaCritica(id, nombre, tiempo, critica, prioridad);
 			this.tareas.add(tarea);
+			this.tareasCriticas.add(tareaCritica);
 		}
 	}
 	
@@ -85,8 +91,11 @@ public class CSVReader {
 		return lines;
 	}
 
-	public ArrayList<Tarea> getTareas(){
-		return new ArrayList<Tarea>(this.tareas);
+	public Tree getTareas(){
+		return this.tareas;
+	}
+	public Tree getTareasCriticas(){
+		return this.tareasCriticas;
 	}
 	public ArrayList<Procesador> getProcesadores(){
 		return new ArrayList<Procesador>(this.procesadores);
