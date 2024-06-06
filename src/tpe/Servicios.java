@@ -96,9 +96,13 @@ public class Servicios {
 				listaCriticas.add(root.getTarea());
 			}
 			if(esCritica){
-				servicio2(listaCriticas, esCritica, root.getRight());
+				if (root.getRight() != null){
+					servicio2(listaCriticas, esCritica, root.getRight());
+				}
 			} else {
-				servicio2(listaCriticas, esCritica, root.getLeft());
+				if (root.getLeft() != null){
+					servicio2(listaCriticas, esCritica, root.getLeft());
+				}
 			}
 		}
 		return listaCriticas;
@@ -111,8 +115,12 @@ public class Servicios {
 			servicio2(listaCriticas, esCritica, actual.getLeft());
 		}
 	}
+
 	public int cantTareasCriticas(){
 		return tareasCriticas.getCantTareasCriticas();
+	}
+	public int cantTareas(){
+		return tareas.getCantTareas();
 	}
     /*
      * Complejidad: O(n), donde n es la cantidad de tareas.
@@ -131,7 +139,6 @@ public class Servicios {
 		}
 		return tareasAcotadas;
 	}
-
 	private void servicio3(int prioridadInferior, int prioridadSuperior, TreeNode actual, List<Tarea> tareasAcotadas) {
 		Tarea tareaActual = actual.getTarea();
 		int prioridadActual = tareaActual.getPrioridad();
@@ -150,9 +157,82 @@ public class Servicios {
 		}
 	}
 
-	public Solucion backtracking(){
-		//TODO
-		return null;
+	private List<Tarea> listaTareas(Tree tareas){
+		List<Tarea> listaTareas = new ArrayList<>();
+		listaTareas(tareas.getRoot(), listaTareas);
+		return listaTareas;
+	}
+	private void listaTareas(TreeNode tarea, List<Tarea> listaTareas){
+		if (tarea.getRight() != null){
+			listaTareas(tarea.getRight(), listaTareas);
+		}
+		listaTareas.add(tarea.getTarea());
+		if (tarea.getLeft() != null){
+			listaTareas(tarea.getLeft(), listaTareas);
+		}
+	}
+
+	/*
+	La estrategia utilizada en este algoritmo se basa en generar
+	todas las combinaciones posibles entre procesadores y tareas,
+	y ver cual de ellas es la que tarda menos tiempo de ejecucion.
+	Para reducir la cantidad de estados generados, se utiliza una
+	estrategia de poda, donde una vez hallada una posible solucion,
+	se guarda tiempo total de ejecucion de dicha solucion. Luego,
+	cada vez que se genera un nuevo estado, se analiza el tiempo de
+	ejecucion de ese estado en ese momento, y si supera el mejor tiempo
+	de ejecucion obtenido hasta el momento, el estado es descartado como
+	una posible solucion.
+	Ademas, dentro de la poda intervienen otros criterios, como que un
+	mismo procesador no puede ejecutar mas de 2 tareas criticas y que los
+	procesadores no refrigerados no puedan ejecutar mas de X tiempo de ejecucion
+	a las tareas asignadas (este tiempo es dado por parametro [tiempoEjecucion]
+
+	La complejidad de este algoritmo depende de la cantidad de procesadores p,
+	y de la cantidad de tareas t. Ya que se generan todas las posibles combinaciones
+	entre procesadores y tareas, la cantidad de estados que pueden ser solucion
+	se calcularia de la siguiente forma: p^t.
+	Como el resto de metodos utilizados dentro del algoritmo no superan la complejidad
+	O(t) o O(p), la complejidad temporal resulta en O(p^t)
+	 */
+	public Solucion backtracking(int tiempoEjecucion){
+		List<Tarea> listaTareas = listaTareas(this.tareas); // O(t)
+		Solucion solucion = new Solucion(listaTareas); // O(1)
+		Estado estado = new Estado(listaTareas); // O(1)
+		if (cantTareasCriticas() > this.procesadores.size()){ //O(1)
+			return solucion;
+		}
+		backtracking(solucion, estado, tiempoEjecucion);
+		return solucion;
+	}
+	private void backtracking(Solucion solucion, Estado estado, int tiempoEjecucion){
+		if(estado.getNivel() == cantTareas()){ //O(1)
+			if (solucion.setValorMinimo(estado.getValor())){ //O(p)
+				solucion.setProcesadores(estado.getProcesadores()); //O(p)
+			}
+		} else {
+			for (Procesador proc : this.procesadores){
+				solucion.agregarEstadoGenerado();
+				Tarea tarea = estado.siguiente(proc);
+				if (!poda(solucion, estado, tarea, proc, tiempoEjecucion)){
+					backtracking(solucion, estado, tiempoEjecucion);
+				}
+				estado.remove();
+			}
+		}
+	}
+	private boolean poda(Solucion solucion, Estado estado, Tarea tarea, Procesador p, int tiempoEjecucion){
+		boolean podar = false;
+		if (estado.getValor() >= solucion.getValorMinimo()){
+			podar = true;
+		}
+		if (tarea.isCritica() && p.getEjecutoCritica() > 1){
+			podar = true;
+		}
+		if (!p.isRefrigerado() && tarea.getTiempo() > tiempoEjecucion){
+			podar = true;
+		}
+		return podar;
 	}
 
 	public Solucion greedy(){

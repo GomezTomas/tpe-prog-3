@@ -5,11 +5,13 @@ import tpe.tareas.Tarea;
 public class Tree {
 
     private TreeNode root;
+    private int cantTareas;
     private int cantTareasCriticas;
 
     public Tree() {
         this.root = null;
         this.cantTareasCriticas = 0;
+        this.cantTareas = 0;
     }
 
     public TreeNode getRoot() {
@@ -22,6 +24,7 @@ public class Tree {
             if(tarea.isCritica()){
                 this.cantTareasCriticas++;
             }
+            this.cantTareas++;
         } else {
             this.add(this.root, tarea);
         }
@@ -34,6 +37,7 @@ public class Tree {
                 if(tarea.isCritica()){
                     this.cantTareasCriticas++;
                 }
+                this.cantTareas++;
             } else {
                 add(actual.getLeft(), tarea);
             }
@@ -44,6 +48,7 @@ public class Tree {
                 if(tarea.isCritica()){
                     this.cantTareasCriticas++;
                 }
+                this.cantTareas++;
             } else {
                 add(actual.getRight(), tarea);
             }
@@ -53,7 +58,9 @@ public class Tree {
     public boolean isEmpty(){
         return this.root == null;
     }
-
+    public int getCantTareas(){
+        return this.cantTareas;
+    }
     public int getCantTareasCriticas(){
         return this.cantTareasCriticas;
     }
