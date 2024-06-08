@@ -17,7 +17,7 @@ public class Tarea implements Comparable<Tarea>{
 
     @Override
     public String toString() {
-        return String.format("[id: %s, tiempoEjecucion: %s, critica: %s, prioridad: %s]\n", this.id, this.tiempo, this.critica, this.prioridad);
+        return String.format("[id: %s, nombre: %s,  tiempoEjecucion: %s, critica: %s, prioridad: %s]\n", this.id, this.nombre, this.tiempo, this.critica, this.prioridad);
     }
 
     public String getId() {

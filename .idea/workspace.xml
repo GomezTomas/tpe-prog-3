@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="294b17af-735f-4b3e-abb2-efcc94d3b0b2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/tpe/Estado.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/tpe/tareas/TareaTiempoEjecucion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tpe/Estado.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Estado.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/Procesador.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Procesador.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/Servicios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Servicios.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/Solucion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Solucion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tpe/Tree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Tree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tpe/datasets/Procesadores.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/datasets/Procesadores.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/datasets/Tareas.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/datasets/Tareas.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/tareas/Tarea.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/tareas/Tarea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tpe/utils/CSVReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/utils/CSVReader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +112,9 @@
       <workItem from="1717093189141" duration="4698000" />
       <workItem from="1717377083877" duration="7707000" />
       <workItem from="1717642263473" duration="5537000" />
-      <workItem from="1717689042507" duration="6833000" />
+      <workItem from="1717689042507" duration="26601000" />
+      <workItem from="1717797436580" duration="6070000" />
+      <workItem from="1717868085189" duration="6198000" />
     </task>
     <servers />
   </component>
@@ -123,13 +125,14 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="Application">
-        <watch expression="servicios.tareasCriticas.root.right" />
-        <watch expression="servicios.tareasCriticas.root" />
-        <watch expression="tareas.root.left" />
-      </configuration>
-    </watches-manager>
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="22" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

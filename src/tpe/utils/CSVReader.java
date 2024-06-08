@@ -5,6 +5,7 @@ import tpe.Procesador;
 import tpe.tareas.Tarea;
 import tpe.tareas.TareaCritica;
 import tpe.Tree;
+import tpe.tareas.TareaTiempoEjecucion;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,11 +18,13 @@ public class CSVReader {
 
 	private Tree tareas;
 	private Tree tareasCriticas;
+	private Tree tareasTiempoEjecucion;
 	private ArrayList<Procesador> procesadores;
 
 	public CSVReader() {
 		this.tareas = new Tree();
 		this.tareasCriticas = new Tree();
+		this.tareasTiempoEjecucion = new Tree();
 		this.procesadores = new ArrayList<>();
 	}
 	
@@ -41,8 +44,12 @@ public class CSVReader {
 			// Aca instanciar lo que necesiten en base a los datos leidos
 			Tarea tarea = new Tarea(id, nombre, tiempo, critica, prioridad);
 			TareaCritica tareaCritica = new TareaCritica(id, nombre, tiempo, critica, prioridad);
+			TareaTiempoEjecucion tareaTiempoEjecucion = new TareaTiempoEjecucion(id, nombre, tiempo, critica, prioridad);
+
 			this.tareas.add(tarea);
 			this.tareasCriticas.add(tareaCritica);
+			this.tareasTiempoEjecucion.add(tareaTiempoEjecucion);
+
 		}
 	}
 	
@@ -97,7 +104,10 @@ public class CSVReader {
 	public Tree getTareasCriticas(){
 		return this.tareasCriticas;
 	}
+	public Tree getTareasTiempoEjecucion(){
+		return this.tareasTiempoEjecucion;
+	}
 	public ArrayList<Procesador> getProcesadores(){
-		return new ArrayList<Procesador>(this.procesadores);
+		return new ArrayList<>(this.procesadores);
 	}
 }

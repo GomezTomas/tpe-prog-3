@@ -7,19 +7,21 @@ import java.util.List;
 
 public class Estado {
 
-    private List<Procesador> procesadores;
+    private List<Procesador> procesadoresEstado;
+    private List<Procesador> procesadoresOriginal;
     private List<Tarea> tareas;
 
     private int nivel;
 
-    public Estado(List<Tarea> tareas) {
-        this.procesadores = new ArrayList<>();
+    public Estado(List<Tarea> tareas, List<Procesador> procesadoresOriginal) {
+        this.procesadoresEstado = new ArrayList<>();
+        this.procesadoresOriginal = new ArrayList<>(procesadoresOriginal);
         this.nivel = 0;
-        this.tareas = tareas;
+        this.tareas = new ArrayList<>(tareas);
     }
 
     public Tarea siguiente(Procesador proc) {
-        this.procesadores.add(this.nivel, proc);
+        this.procesadoresEstado.add(this.nivel, proc);
         Tarea tarea = this.tareas.get(this.nivel);
         if (tarea.isCritica()){
             proc.ejecutarCritica();
@@ -31,9 +33,16 @@ public class Estado {
     public void remove(){
         this.nivel--;
         if (this.tareas.get(this.nivel).isCritica()){
-            this.procesadores.get(this.nivel).removeCritica();
+            this.procesadoresEstado.get(this.nivel).removeCritica();
         }
-        this.procesadores.remove(this.nivel);
+        this.procesadoresEstado.remove(this.nivel);
+    }
+
+    public void addProcesador(Procesador proc, Tarea tarea){
+        if (tarea.isCritica()){
+            proc.ejecutarCritica();
+        }
+        this.procesadoresEstado.add(proc);
     }
 
     public int getNivel(){
@@ -41,25 +50,36 @@ public class Estado {
     }
 
     public List<Procesador> getProcesadores(){
-        return this.procesadores;
+        return this.procesadoresEstado;
     }
 
-    public int getValor(){
+    public int getTiempoEjecucion(){
+        int tiempoEjecucion = 0;
+        for (Procesador proc : this.procesadoresOriginal){
+            int tiempoProc = getTiempoEjecucion(proc);
+            if (tiempoProc > tiempoEjecucion){
+                tiempoEjecucion = tiempoProc;
+            }
+        }
+        return tiempoEjecucion;
+    }
+
+    public int getTiempoEjecucion(Procesador proc){
         int i = 0;
-        int valor = 0;
-        while (i < this.procesadores.size()) {
-            int valorTarea = this.tareas.get(i).getTiempo();
-            int valorProcesador = this.procesadores.get(i).getValor();
-            this.procesadores.get(i).setValor(valorProcesador + valorTarea);
-            if (this.procesadores.get(i).getValor() > valor) {
-                valor = this.procesadores.get(i).getValor();
+        int tiempoEjecucion = 0;
+        while (i < this.procesadoresEstado.size()) {
+            if (this.procesadoresEstado.get(i).equals(proc)){
+                int tiempoEjecucionTarea = this.tareas.get(i).getTiempo();
+                int tiempoEjecucionProcesador = this.procesadoresEstado.get(i).getTiempoEjecucion();
+                this.procesadoresEstado.get(i).setTiempoEjecucion(tiempoEjecucionProcesador + tiempoEjecucionTarea);
+                if (this.procesadoresEstado.get(i).getTiempoEjecucion() > tiempoEjecucion) {
+                    tiempoEjecucion = this.procesadoresEstado.get(i).getTiempoEjecucion();
+                }
             }
             i++;
         }
-        for (Procesador proc : this.procesadores) {
-            proc.setValor(0);
-        }
-        return valor;
+        proc.setTiempoEjecucion(0);
+        return tiempoEjecucion;
     }
 
 }

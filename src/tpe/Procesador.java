@@ -6,7 +6,7 @@ public class Procesador {
     private Boolean refrigerado;
     private Integer anio;
 
-    private int valor;
+    private int tiempoEjecucion;
     private int ejecutoCritica;
 
     public Procesador(String id, String codigo, Boolean refrigerado, Integer anio) {
@@ -15,21 +15,23 @@ public class Procesador {
         this.refrigerado = refrigerado;
         this.anio = anio;
 
-        this.valor = 0;
+        this.tiempoEjecucion = 0;
         this.ejecutoCritica = 0;
     }
 
-    public int getValor(){
-        return this.valor;
+    public int getTiempoEjecucion(){
+        return this.tiempoEjecucion;
     }
-    public void setValor(int val){
-        this.valor = val;
+    public void setTiempoEjecucion(int val){
+        this.tiempoEjecucion = val;
     }
     public void ejecutarCritica(){
         this.ejecutoCritica++;
     }
     public void removeCritica(){
-        this.ejecutoCritica--;
+        if (ejecutoCritica != 0){
+            this.ejecutoCritica--;
+        }
     }
     public int getEjecutoCritica(){
         return this.ejecutoCritica;
