@@ -41,7 +41,7 @@ public class Tree {
             } else {
                 add(actual.getLeft(), tarea);
             }
-        } else if (tarea.compareTo(actual.getTarea()) > 0){
+        } else if (tarea.compareTo(actual.getTarea()) >= 0){
             if (actual.getRight() == null){
                 TreeNode temp = new TreeNode(tarea);
                 actual.setRight(temp);
