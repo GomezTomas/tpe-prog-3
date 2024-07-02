@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 
 public class CSVReader {
@@ -20,12 +21,14 @@ public class CSVReader {
 	private Tree tareasCriticas;
 	private Tree tareasTiempoEjecucion;
 	private ArrayList<Procesador> procesadores;
+	private Hashtable<String, Tarea> tareasID;
 
 	public CSVReader() {
 		this.tareas = new Tree();
 		this.tareasCriticas = new Tree();
 		this.tareasTiempoEjecucion = new Tree();
 		this.procesadores = new ArrayList<>();
+		this.tareasID = new Hashtable<>();
 	}
 	
 	public void readTasks(String taskPath) {
@@ -49,6 +52,7 @@ public class CSVReader {
 			this.tareas.add(tarea);
 			this.tareasCriticas.add(tareaCritica);
 			this.tareasTiempoEjecucion.add(tareaTiempoEjecucion);
+			this.tareasID.put(id, tarea);
 
 		}
 	}
@@ -109,5 +113,8 @@ public class CSVReader {
 	}
 	public ArrayList<Procesador> getProcesadores(){
 		return new ArrayList<>(this.procesadores);
+	}
+	public Hashtable<String, Tarea> getTareasID(){
+		return this.tareasID;
 	}
 }

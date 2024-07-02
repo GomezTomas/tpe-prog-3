@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="294b17af-735f-4b3e-abb2-efcc94d3b0b2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/tpe/tareas/TareaTiempoEjecucion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tpe/Estado.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Estado.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tpe/Procesador.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Procesador.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/Servicios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Servicios.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tpe/Solucion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/Solucion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tpe/datasets/Tareas.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/datasets/Tareas.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tpe/tareas/Tarea.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/tareas/Tarea.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tpe/utils/CSVReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tpe/utils/CSVReader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +41,7 @@
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Application.Main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "reentrega",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/azult/OneDrive/Escritorio/facu-2024/prog-3/tpe-prog-3",
@@ -114,7 +108,9 @@
       <workItem from="1717642263473" duration="5537000" />
       <workItem from="1717689042507" duration="26601000" />
       <workItem from="1717797436580" duration="6070000" />
-      <workItem from="1717868085189" duration="6198000" />
+      <workItem from="1717868085189" duration="7116000" />
+      <workItem from="1718201959156" duration="5000" />
+      <workItem from="1719928177127" duration="1535000" />
     </task>
     <servers />
   </component>

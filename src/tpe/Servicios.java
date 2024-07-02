@@ -5,6 +5,7 @@ import tpe.utils.CSVReader;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class Servicios {
 	private Tree tareasCriticas;
 	private Tree tareasTiempoEjecucion;
 	private ArrayList<Procesador> procesadores;
+	private Hashtable<String, Tarea> tareasID;
 
 	/*
      * La complejida de guardar los procesadores es de O(n^2), siendo
@@ -50,42 +52,15 @@ public class Servicios {
 		this.tareasCriticas = reader.getTareasCriticas();
 		this.tareasTiempoEjecucion = reader.getTareasTiempoEjecucion();
 		this.procesadores = reader.getProcesadores();
+		this.tareasID = reader.getTareasID();
 	}
 
 	/*
-     * Complejidad: O(n), donde n es la cantidad de tareas.
-     * Se debe recorrer completamente el arbol hasta encontrar el ID solicitado
-     * y en el peor caso, el ID no existe.
-     * El grupo considero la implementacion de un arbol binario ordenado por ID, ya que si este
-     * se encuentra balanceado, la complejidad se reduciria a O(log(n)).
-     * Pero en este caso, las tareas estan ordenadas por ID, lo que hace que el arbol
-     * se convierta practicamente en una lista, ya que todos los valores se encontrarian de forma
-     * lineal.
+     * Complejidad: O(1), ya que la complejidad de consultar una hashtable
+     * generalmente es constante y no depende de la cantidad de elementos.
      */
 	public Tarea servicio1(String ID) {
-		if (this.tareas.isEmpty()){
-			return null;
-		} else {
-			return servicio1(ID, this.tareas.getRoot());
-		}
-	}
-	private Tarea servicio1(String ID, TreeNode tareaNode) {
-		Tarea tmp = null;
-		if(tareaNode.getTarea().getId().equals(ID)){
-			return tareaNode.getTarea();
-		} else {
-			if (tareaNode.getLeft() != null){
-				tmp = servicio1(ID, tareaNode.getLeft());
-			}
-			if (tmp != null && tmp.getId().equals(ID)){
-				return tmp;
-			}
-			if (tareaNode.getRight() != null){
-				return servicio1(ID, tareaNode.getRight());
-			} else {
-				return null;
-			}
-		}
+		return this.tareasID.get(ID);
 	}
 
 	/*
