@@ -1,6 +1,6 @@
 package tpe;
 
-public class Procesador {
+public class Procesador{
     private String id;
     private String codigo;
     private Boolean refrigerado;
@@ -25,13 +25,20 @@ public class Procesador {
     public void setTiempoEjecucion(int val){
         this.tiempoEjecucion = val;
     }
+    public void sumarTiempo(int tiempoEjecucion){
+        this.tiempoEjecucion += tiempoEjecucion;
+    }
+    public void restarTiempo(int tiempoEjecucion){
+        this.tiempoEjecucion -= tiempoEjecucion;
+    }
     public void ejecutarCritica(){
         this.ejecutoCritica++;
     }
     public void removeCritica(){
-        if (ejecutoCritica != 0){
-            this.ejecutoCritica--;
-        }
+        this.ejecutoCritica--;
+    }
+    public void resetCritica(){
+        this.ejecutoCritica = 0;
     }
     public int getEjecutoCritica(){
         return this.ejecutoCritica;

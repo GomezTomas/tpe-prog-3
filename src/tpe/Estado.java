@@ -65,21 +65,7 @@ public class Estado {
     }
 
     public int getTiempoEjecucion(Procesador proc){
-        int i = 0;
-        int tiempoEjecucion = 0;
-        while (i < this.procesadoresEstado.size()) {
-            if (this.procesadoresEstado.get(i).equals(proc)){
-                int tiempoEjecucionTarea = this.tareas.get(i).getTiempo();
-                int tiempoEjecucionProcesador = this.procesadoresEstado.get(i).getTiempoEjecucion();
-                this.procesadoresEstado.get(i).setTiempoEjecucion(tiempoEjecucionProcesador + tiempoEjecucionTarea);
-                if (this.procesadoresEstado.get(i).getTiempoEjecucion() > tiempoEjecucion) {
-                    tiempoEjecucion = this.procesadoresEstado.get(i).getTiempoEjecucion();
-                }
-            }
-            i++;
-        }
-        proc.setTiempoEjecucion(0);
-        return tiempoEjecucion;
+        return proc.getTiempoEjecucion();
     }
 
 }

@@ -3,10 +3,7 @@ package tpe;
 import tpe.tareas.Tarea;
 import tpe.utils.CSVReader;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 /**
  * NO modificar la interfaz de esta clase ni sus métodos públicos.
@@ -37,6 +34,12 @@ public class Servicios {
      * de greedy se agrego la implementacion de un arbol ordenado por el tiempo de ejecucion
      * de las tareas, que afecta en cuanto a espacio utilizado y tiempo de ejecucion, pero no
      * afecta la complejidad algoritmica.
+     *
+     * Se agrego la implementacion de una Hashtable para guardar las tareas segun su id y asi
+     * mejorar la eficiencia del servicio 1. Insertar un elemento en una hastable suele tener
+     * una complejidad constante, pero en caso de que tenga que crecer la estructura, nos
+     * acercariamos a una complejidad de O(m). Sin embargo, sigue siendo menor que la complejidad
+     * de insertarlas en el arbol de tareas criticas.
      *
      * Entonces, la complejidad total seria O(m^2 + n^2), pero podemos asumir que la cantidad
      * de tareas, en general, va a ser mayor o igual a la cantidad de procesadores, por lo que
@@ -156,9 +159,10 @@ public class Servicios {
 			listaTareas(tarea.getLeft(), listaTareas);
 		}
 	}
-	private void resetearCriticosProcesadores(){
+	private void resetearProcesadores(){
 		for (Procesador proc : procesadores){
-			proc.removeCritica();
+			proc.resetCritica();
+			proc.setTiempoEjecucion(0);
 		}
 	}
 
@@ -190,10 +194,10 @@ public class Servicios {
 	* O(t) o O(p), la complejidad temporal resulta en O(p^t)
 	*/
 	public Solucion backtracking(int tiempoEjecucion){
-		resetearCriticosProcesadores();
+		resetearProcesadores();
 		List<Tarea> listaTareas = listaTareas(this.tareas);
 		Solucion solucion = new Solucion(listaTareas, "Backtracking", this.procesadores); // O(1)
-		if (cantTareasCriticas() > this.procesadores.size()){
+		if (cantTareasCriticas() > this.procesadores.size() * 2){
 			return solucion;
 		}
 		Estado estado = new Estado(listaTareas, this.procesadores);
@@ -210,7 +214,9 @@ public class Servicios {
 				solucion.agregarEstadoGenerado();
 				Tarea tarea = estado.siguiente(proc);
 				if (!poda(solucion, estado, tarea, proc, tiempoEjecucion)){
+					proc.sumarTiempo(tarea.getTiempo());
 					backtracking(solucion, estado, tiempoEjecucion);
+					proc.restarTiempo(tarea.getTiempo());
 				}
 				estado.remove();
 			}
@@ -221,107 +227,88 @@ public class Servicios {
 		if (estado.getTiempoEjecucion() >= solucion.getTiempoEjecucionMinimo()){
 			podar = true;
 		}
-		if (tarea.isCritica() && p.getEjecutoCritica() > 1){
+		if (tarea.isCritica() && p.getEjecutoCritica() > 2){
 			podar = true;
 		}
-		if (!p.isRefrigerado() && (estado.getTiempoEjecucion(p)) > tiempoEjecucion){
+		if (!p.isRefrigerado() && (estado.getTiempoEjecucion(p) + tarea.getTiempo()) > tiempoEjecucion){
 			podar = true;
 		}
 		return podar;
 	}
 
-	private List<Procesador> resetProcesadores(List<Procesador> procesadoresInvertidos){
-		List<Procesador> procesadores = new ArrayList<>(procesadoresInvertidos);
-		Collections.reverse(procesadoresInvertidos);
-		return procesadores;
-	}
-	private int procesadorFactible(List<Procesador> procesadores, List<Tarea> listaTareas, int tiempoEjecucion, Solucion solucion, Estado estado){
-		int i = 0;
-		while (i < procesadores.size() && !puedeEjecutar(procesadores.get(i), listaTareas.get(0), tiempoEjecucion, estado)){
-			i++;
-			solucion.agregarEstadoGenerado();
+	private Procesador mejorProcesador(List<Procesador> procesadores, List<Tarea> listaTareas, int tiempoEjecucion, Solucion solucion, Estado estado){
+		boolean procesadorElegido = false;
+		Procesador factible = null;
+		Procesador mejorProcesador = null;
+		while(!procesadorElegido && !procesadores.isEmpty()){
+			int i = 0;
+			int j = 0;
+			int sum = Integer.MAX_VALUE;
+			for (Procesador p : procesadores){
+				if (p.getTiempoEjecucion() < sum){
+					factible = p;
+					sum = p.getTiempoEjecucion();
+					j = i;
+				}
+				solucion.agregarEstadoGenerado();
+				i++;
+			}
+			if (puedeEjecutar(factible, listaTareas.get(0), tiempoEjecucion, estado)){
+				procesadorElegido = true;
+				mejorProcesador = factible;
+			} else {
+				procesadores.remove(j);
+			}
 		}
-		if (i == procesadores.size()){
-			return -1;
-		}
-		return i;
+		return mejorProcesador;
 	}
 
 	/*
-	* Para implementar el algoritmo, utilizamos el siguiente criterio:
-	* Ordenamos las tareas de mayor a menor, utilizando el tiempo de ejecucion
-	* como criterio de ordenamiento.
-	* Luego, le asignamos a la primer tarea el primer procesador que se encuentra
-	* en la lista de procesadores, y lo eliminamos de la misma. Cuando la lista se
-	* quede sin procesadores, se le vuelven a agregar los procesadores pero ordenados
-	* de forma inversa. De esta forma lo que buscamos es que los procesadores asignados
-	* a tareas que tienen mucho tiempo de ejecucion, vuelvan a ejecutar una tarea cuyo
-	* tiempo de ejecucion sea mucho mas pequeño. Un ejemplo de la idea:
-	*
-	* (Los numeros representan el tiempo de ejecucion)
-	* Tareas: T1:100, T2:80, T3:60, T4:40, T5:20, T6:10.
-	* Procesadores: P1, P2, P3.
-	* P1 ejecuta T1, P2 ejecuta T2, P3 ejecuta T3. En este momento se resetea
-	* la lista de procesadores de forma invertida, por lo tanto
-	* Procesadores: P3, P2, P1.
-	* P3 ejecuta T4, P2 ejecuta T5, P1 ejecuta T6.
-	*
-	* Al final de la ejecucion:
-	* P1 ejecuta T1 y T6, por lo que el tiempo de ejecucion total es 110
-	* P2 ejecuta T2 y T5, por lo que el tiempo de ejecucion total es 100
-	* P3 ejecuta T3 y T4, por lo que el tiempo de ejecucion total es 100
-	*
-	* Entonces, el tiempo total que tardan los procesadores en ejecutar
-	* las tareas seria de 110.
-	*
-	* La complejidad del algoritmo depende tanto de la cantidad de tareas [t],
-	* como de la cantidad de procesadores [p].
-	* Ya que en el peor caso, por cada tarea se revisan todos los procesadores
-	* la complejida algoritmica es del orden de O(p*t)
-	*/
+	 * Para implementar el algoritmo, utilizamos el siguiente criterio:
+	 * Ordenamos las tareas de mayor a menor, utilizando el tiempo de ejecucion
+	 * como criterio de ordenamiento.
+	 * Luego, para la asignacion de los procesadores, elegimos el procesador
+	 * que tenga menor tiempo de ejecucion hasta el momento, ya que el resultado
+	 * final de la ejecucion va a ser igual al tiempo de ejecucion del procesador
+	 * que mas tarda. (El procesador con mayor tiempo de ejecucion).
+	 *
+	 * La complejidad del algoritmo depende tanto de la cantidad de tareas [t],
+	 * como de la cantidad de procesadores [p].
+	 * Ya que en el peor caso, por cada tarea se revisan todos los procesadores
+	 * la complejida algoritmica es del orden de O(p*t)
+	 */
 	public Solucion greedy(int tiempoEjecucion){
-		resetearCriticosProcesadores();
+		resetearProcesadores();
 		List<Tarea> listaTareas = listaTareas(this.tareasTiempoEjecucion);
-		Solucion solucion = new Solucion(listaTareas, "Greedy", this.procesadores);
-		if (cantTareasCriticas() > this.procesadores.size()){
+		Solucion solucion = new Solucion(listaTareas, "Greedy2", this.procesadores);
+		if (cantTareasCriticas() > this.procesadores.size() * 2){
 			return solucion;
 		}
 		Estado estado = new Estado(listaTareas, this.procesadores);
-		List<Procesador> procesadores = new ArrayList<>(this.procesadores);
-		List<Procesador> procesadoresInvertidos = new ArrayList<>(this.procesadores);
-		Collections.reverse(procesadoresInvertidos);
-		final int MAX_INTENTOS = 2;
 		while (!listaTareas.isEmpty()){
-			int resetProcesadores = 0;
-			solucion.agregarEstadoGenerado();
-			if (procesadores.isEmpty()){
-				procesadores = resetProcesadores(procesadoresInvertidos);
+			List<Procesador> procesadores = new ArrayList<>(this.procesadores);
+			if(procesadores.size() < this.procesadores.size()){
+				procesadores = new ArrayList<>(this.procesadores);
 			}
-			boolean procesadorInsertado = false;
-			while (resetProcesadores < MAX_INTENTOS && !procesadorInsertado){
-				int indiceProc = procesadorFactible(procesadores, listaTareas, tiempoEjecucion, solucion, estado);
-				if (indiceProc == -1){
-					resetProcesadores++;
-					procesadores = resetProcesadores(procesadoresInvertidos);
-				} else {
-					estado.addProcesador(procesadores.get(indiceProc), listaTareas.get(0));
-					procesadores.remove(indiceProc);
-					listaTareas.remove(0);
-					procesadorInsertado = true;
-				}
-			}
-			if (!procesadorInsertado){
+			Procesador mejorProcesador = mejorProcesador(procesadores, listaTareas, tiempoEjecucion, solucion, estado);
+			if (mejorProcesador == null) {
+				System.out.println("1278936128763918723689126318927638912");
 				return solucion;
+			} else {
+				estado.addProcesador(mejorProcesador, listaTareas.get(0));
+				Tarea tarea = listaTareas.remove(0);
+				mejorProcesador.sumarTiempo(tarea.getTiempo());
 			}
+
 		}
 		solucion.setProcesadores(estado.getProcesadores());
 		solucion.setTiempoEjecucionMinimo(estado.getTiempoEjecucion());
-
 		return solucion;
 	}
+
 	private boolean puedeEjecutar(Procesador procesador, Tarea tarea, int tiempoEjecucion, Estado estado){
 		boolean puede = true;
-		if (tarea.isCritica() && procesador.getEjecutoCritica() > 0){
+		if (tarea.isCritica() && procesador.getEjecutoCritica() > 1){
 			puede = false;
 		}
 		if (!procesador.isRefrigerado() && (estado.getTiempoEjecucion(procesador) + tarea.getTiempo()) > tiempoEjecucion){
