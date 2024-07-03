@@ -160,7 +160,7 @@ public class Servicios {
 		}
 	}
 	private void resetearProcesadores(){
-		for (Procesador proc : procesadores){
+		for (Procesador proc : this.procesadores){
 			proc.resetCritica();
 			proc.setTiempoEjecucion(0);
 		}
@@ -280,7 +280,7 @@ public class Servicios {
 	public Solucion greedy(int tiempoEjecucion){
 		resetearProcesadores();
 		List<Tarea> listaTareas = listaTareas(this.tareasTiempoEjecucion);
-		Solucion solucion = new Solucion(listaTareas, "Greedy2", this.procesadores);
+		Solucion solucion = new Solucion(listaTareas, "Greedy", this.procesadores);
 		if (cantTareasCriticas() > this.procesadores.size() * 2){
 			return solucion;
 		}
@@ -292,14 +292,12 @@ public class Servicios {
 			}
 			Procesador mejorProcesador = mejorProcesador(procesadores, listaTareas, tiempoEjecucion, solucion, estado);
 			if (mejorProcesador == null) {
-				System.out.println("1278936128763918723689126318927638912");
 				return solucion;
 			} else {
 				estado.addProcesador(mejorProcesador, listaTareas.get(0));
 				Tarea tarea = listaTareas.remove(0);
 				mejorProcesador.sumarTiempo(tarea.getTiempo());
 			}
-
 		}
 		solucion.setProcesadores(estado.getProcesadores());
 		solucion.setTiempoEjecucionMinimo(estado.getTiempoEjecucion());
